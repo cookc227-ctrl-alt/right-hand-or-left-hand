@@ -246,10 +246,44 @@
             const gallery = document.getElementById('gallery');
             const emptyState = document.getElementById('emptyState');
 
-            // Check if images folder exists and load images
-            // For now, show empty state with instructions
-            gallery.innerHTML = '';
-            emptyState.style.display = 'block';
+            // Fetch the images folder contents from GitHub API
+            fetch('https://api.github.com/repos/cookc227-ctrl-alt/right-hand-or-left-hand/contents/images')
+                .then(response => response.json())
+                .then(data => {
+                    // Filter for image files
+                    const imageFiles = data.filter(file => 
+                        /\.(jpg|jpeg|png|gif|webp)$/i.test(file.name)
+                    );
+
+                    if (imageFiles.length === 0) {
+                        gallery.innerHTML = '';
+                        emptyState.style.display = 'block';
+                        return;
+                    }
+
+                    // Hide empty state and populate gallery
+                    emptyState.style.display = 'none';
+                    gallery.innerHTML = '';
+
+                    imageFiles.forEach(file => {
+                        const imageUrl = `https://raw.githubusercontent.com/cookc227-ctrl-alt/right-hand-or-left-hand/main/images/${file.name}`;
+                        const item = document.createElement('div');
+                        item.className = 'gallery-item';
+                        item.onclick = () => openModal(imageUrl);
+                        item.innerHTML = `
+                            <img src="${imageUrl}" alt="${file.name}" onerror="this.style.display='none'">
+                            <div class="gallery-item-overlay">
+                                <h3>${file.name.split('.')[0]}</h3>
+                                <p>Click to view</p>
+                            </div>
+                        `;
+                        gallery.appendChild(item);
+                    });
+                })
+                .catch(error => {
+                    console.log('Could not load images:', error);
+                    emptyState.style.display = 'block';
+                });
         }
 
         function openModal(src) {

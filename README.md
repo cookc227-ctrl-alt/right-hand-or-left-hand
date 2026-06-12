@@ -1,3 +1,2 @@
 pictures
-
-copy and paste "https://cookc227-ctrl-alt.github.io/right-hand-or-left-hand/" into your address bar
+click "https://cookc227-ctrl-alt.github.io/right-hand-or-left-hand/" or copy and paste into address bar
